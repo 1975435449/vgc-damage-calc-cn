@@ -2686,22 +2686,6 @@ $(document).ready(function () {
     resetSetSelectors();
     storedSetFixes();
 
-    // Prevent mobile keyboard auto-popup on Select2 dropdown open
-    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
-        $(document).on('select2-open', function (e) {
-            setTimeout(function () {
-                var $searchInput = $(".select2-search input:focus");
-                if ($searchInput.length) {
-                    $searchInput.prop("readonly", true); // Temporarily block keyboard
-                    // Enable only when explicitly touched/clicked
-                    $searchInput.one("touchstart mousedown", function () {
-                        $(this).prop("readonly", false).focus();
-                    });
-                }
-            }, 10);
-        });
-    }
-
     // Dismiss loading shield after full initialization
     var $loader = $("#pbo-page-loader");
     if ($loader.length) {
