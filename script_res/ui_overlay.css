@@ -259,6 +259,14 @@ body {
     }
 }
 
+/* ===== Panel widths (compensate 12px→14px font change) ===== */
+.poke-info {
+    width: 34.3em;
+}
+.field-info {
+    width: 25.7em;
+}
+
 /* ===== Desktop: default visible panels ===== */
 @media (min-width: 769px) {
     .panel[data-panel] {
