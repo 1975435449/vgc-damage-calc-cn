@@ -1,6 +1,13 @@
 /* Damage calculation for the Generation VIII games: Sword, Shield, Isle of Armor, and Crown Tundra; 
  * and for the Generation VII games: Sun, Moon, Ultra Sun, and Ultra Moon*/
 
+function _t_pk(v) { return v && typeof translate_pokemon === 'function' ? translate_pokemon(v) : v; }
+function _t_ab(v) { return v && typeof translate_ability === 'function' ? translate_ability(v) : v; }
+function _t_it(v) { return v && typeof translate_item === 'function' ? translate_item(v) : v; }
+function _t_mv(v) { return v && typeof translate_move === 'function' ? translate_move(v) : v; }
+function _t_tp(v) { return v && typeof translate_type === 'function' ? translate_type(v) : v; }
+function _t_fd(v) { return v && typeof translate_field === 'function' ? translate_field(v) : v; }
+
 function GET_DAMAGE_HANDLER(attacker, defender, move, field) {
     switch (gen) {
         case 1:
@@ -37,7 +44,7 @@ function buildDescription(description) {
         output += description.attackBoost + " ";
     }
     if (description.redItem) {
-        output += "Red Item-boosted ";
+        output += "红色道具增强的 ";
     }
     if (description.attackerLevel) {
         output = output + 'Lv. ' + description.attackerLevel + ' ';
@@ -45,63 +52,63 @@ function buildDescription(description) {
     if (!description.usesOppAtkStat) {
         output = appendIfSet(output, description.attackEVs);
     }
-    output = appendIfSet(output, description.attackerItem);
-    output = appendIfSet(output, description.attackerAbility);
+    output = appendIfSet(output, _t_it(description.attackerItem));
+    output = appendIfSet(output, _t_ab(description.attackerAbility));
     if (description.ruinSwordBeads) {
-        output += description.ruinSwordBeads + " of Ruin ";
+        output += _t_ab(description.ruinSwordBeads + " of Ruin") + " ";
     }
     if (description.attackerTera) {
-        output += "Tera-" + description.attackerTera + " ";
+        output += "太晶" + _t_tp(description.attackerTera) + " ";
     }
     if (description.isBurned) {
-        output += "burned ";
+        output += "灼伤的 ";
     }
-    output += description.attackerName + " ";
+    output += _t_pk(description.attackerName) + " ";
     if (description.isHelpingHand) {
-        output += "Helping Hand ";
+        output += "帮助 ";
     }
     if (description.isPowerSpot) {
-        output += "Power Spot ";
+        output += "能量点 ";
     }
     if (description.isBattery) {
-        output += "Battery ";
+        output += "蓄电池 ";
     }
     if (description.isSteelySpirit) {
-        output += "Ally Steely Spirit ";
+        output += "同伴钢之意志 ";
     }
     if (description.isFlowerGiftAtk) {
-        output += "Flower Gift ";
+        output += "花礼 ";
     }
     if (description.meFirst) {
-        output += "Me First ";
+        output += "抢先一步 ";
     }
     if (description.charged) {
-        output += "Charged ";
+        output += "充电 ";
     }
-    output += description.moveName + " ";
+    output += _t_mv(description.moveName) + " ";
     if (description.moveBP && description.moveType) {
-        output += "(" + description.moveBP + " BP " + description.moveType + ") ";
+        output += "(" + description.moveBP + " 威力 " + _t_tp(description.moveType) + ") ";
     } else if (description.moveBP) {
-        output += "(" + description.moveBP + " BP) ";
+        output += "(" + description.moveBP + " 威力) ";
     } else if (description.moveType) {
-        output += "(" + description.moveType + ") ";
+        output += "(" + _t_tp(description.moveType) + ") ";
     }
     if (description.hits) {
-        output += "(" + description.hits + " hits) ";
+        output += "(" + description.hits + "次命中) ";
     }
     if (description.courseDriftSE) {
-        output += "(Super Effective) ";
+        output += "(克制) ";
     }
     if (description.teraBPBoost) {
-        output += "(Tera 60 BP Boost) ";
+        output += "(太晶60威力增强) ";
     }
     if (description.maskBoost) {
-        output += "(1.2x Mask Boost) ";
+        output += "(面具1.2倍增强) ";
     }
     if (description.stellarBoost) {
-        output += "(1st Use) ";
+        output += "(首次使用) ";
     }
-    output += "vs. ";
+    output += "对 ";
     if (description.defenseBoost) {
         if (description.defenseBoost > 0) {
             output += "+";
@@ -109,7 +116,7 @@ function buildDescription(description) {
         output += description.defenseBoost + " ";
     }
     if (description.blueItem) {
-        output += "Blue Item-boosted ";
+        output += "蓝色道具增强的 ";
     }
     if (description.defenderLevel) {
         output = output + 'Lv. ' + description.defenderLevel + ' ';
@@ -122,53 +129,53 @@ function buildDescription(description) {
         output += "/ " + description.defenseEVs + " ";
     }
     if (description.isForesight) {
-        output += "revealed ";
+        output += "看破的 ";
     }
-    output = appendIfSet(output, description.defenderItem);
+    output = appendIfSet(output, _t_it(description.defenderItem));
     if (description.isFlowerGiftSpD) {
-        output += " Flower Gift ";
+        output += " 花礼 ";
     }
-    output = appendIfSet(output, description.defenderAbility);
+    output = appendIfSet(output, _t_ab(description.defenderAbility));
     if (description.ruinTabletsVessel) {
-        output += description.ruinTabletsVessel + " of Ruin ";
+        output += _t_ab(description.ruinTabletsVessel + " of Ruin") + " ";
     }
-    if (description.isDynamax) output += " Dynamax ";
+    if (description.isDynamax) output += " 极巨化 ";
     if (description.defenderTera) {
-        output += "Tera-" + description.defenderTera + " ";
+        output += "太晶" + _t_tp(description.defenderTera) + " ";
     }
-    output += description.defenderName;
+    output += _t_pk(description.defenderName);
     if (description.weather && description.terrain) {
-        output += " in " + description.weather + " and " + description.terrain + " Terrain";
+        output += " 在" + _t_fd(description.weather) + "和" + _t_fd(description.terrain) + "下";
     }
     else if (description.weather) {
-        output += " in " + description.weather;
+        output += " 在" + _t_fd(description.weather) + "下";
     } else if (description.terrain) {
-        output += " in " + description.terrain + " Terrain";
+        output += " 在" + _t_fd(description.terrain) + "下";
     }
     if (description.isAuroraVeil) {
-        output += " through Aurora Veil";
+        output += " 穿过极光幕";
     } else if (description.isReflect) {
-        output += " through Reflect";
+        output += " 穿过反射壁";
     } else if (description.isLightScreen) {
-        output += " through Light Screen";
+        output += " 穿过光墙";
     }
     if (description.isCritical) {
-        output += " on a critical hit";
+        output += " 击中要害";
     }
     if (description.isGravity) {
-        output += " under Gravity";
+        output += " 在重力下";
     }
     if (description.isGlaiveMod) {
-        output += " after using Glaive Rush";
+        output += " 在使用巨剑突击后";
     }
     if (description.isFriendGuard) {
-        output += " with Friend Guard";
+        output += " 配合友情防守";
     }
     if (description.isQuarteredByProtect) {
-        output += " through Protect";
+        output += " 穿过守住";
     }
     if (description.isMechanicsTest) {
-        output += " with custom modifiers";
+        output += " 带有自定义修正";
     }
 
     return output;
@@ -182,11 +189,11 @@ function appendIfSet(str, toAppend) {
 }
 
 function toSmogonStat(stat) {
-    return stat === AT ? "Atk"
-            : stat === DF ? "Def"
-            : stat === SA ? "SpA"
-            : stat === SD ? "SpD"
-            : stat === SP ? "Spe"
+    return stat === AT ? "攻击"
+            : stat === DF ? "防御"
+            : stat === SA ? "特攻"
+            : stat === SD ? "特防"
+            : stat === SP ? "速度"
             : "wtf";
 }
 
@@ -300,7 +307,7 @@ function getModifiedStat(stat, mod) {
 }
 
 function getHPInfo(description, defender) {
-    description.HPEVs = gen < 10 ? defender.HPEVs + " HP " + (defender.HPIVs < 31 ? defender.HPIVs + " IVs" : "") : resultDisplayMode == "SPs" ? defender.HPSPs + " HP " : resultDisplayMode == "EVs" ? (Math.max(0, defender.HPSPs * 8 - 4)) + " HP " : defender.HPraw + " HP ";
+    description.HPEVs = gen < 10 ? defender.HPEVs + " HP " + (defender.HPIVs < 31 ? defender.HPIVs + " 个体值" : "") : resultDisplayMode == "SPs" ? defender.HPSPs + " HP " : resultDisplayMode == "EVs" ? (Math.max(0, defender.HPSPs * 8 - 4)) + " HP " : defender.HPraw + " HP ";
 }
 
 //Speed Mods
@@ -1856,7 +1863,7 @@ function calcAttack(move, attacker, defender, description, isCritical, defAbilit
     var attackInvest = gen < 10 ? attackSource.evs[attackStat] : resultDisplayMode == "SPs" ? attackSource.sps[attackStat] : resultDisplayMode == "EVs" ? Math.max(0, attackSource.sps[attackStat] * 8 - 4) : attackSource.rawStats[attackStat];
     description.attackEVs = attackInvest +
         ((gen < 10 || resultDisplayMode !='raw') && NATURES[attackSource.nature][0] === attackStat ? "+" : (gen < 10 || resultDisplayMode !='raw') && NATURES[attackSource.nature][1] === attackStat ? "-" : "") + " " +
-        toSmogonStat(attackStat) + (attackSource.ivs[attackStat] < 31 ? " " + attackSource.ivs[attackStat] + " IV" : "");
+        toSmogonStat(attackStat) + (attackSource.ivs[attackStat] < 31 ? " " + attackSource.ivs[attackStat] + " 个体值" : "");
     description.usesOppAtkStat = move.name === "Foul Play";
     //Spectral Thief and Meteor Beam aren't part of the calculations but are instead here to properly account for the boosts they give
     if (move.name === "Spectral Thief" && defender.boosts[attackStat] > 0) {
@@ -2027,7 +2034,7 @@ function calcDefense(move, attacker, defender, description, hitsPhysical, isCrit
     var defenseInvest = gen < 10 ? defender.evs[defenseStat] : resultDisplayMode == "SPs" ? defender.sps[defenseStat] : resultDisplayMode == "EVs" ? Math.max(0, defender.sps[defenseStat] * 8 - 4) : defender.rawStats[defenseStat];
     description.defenseEVs = defenseInvest +
         ((gen < 10 || resultDisplayMode !='raw') && NATURES[defender.nature][0] === defenseStat ? "+" : (gen < 10 || resultDisplayMode !='raw') && NATURES[defender.nature][1] === defenseStat ? "-" : "") + " " +
-        toSmogonStat(defenseStat) + (defender.ivs[defenseStat] < 31 ? " " + defender.ivs[defenseStat] + " IV" : "");
+        toSmogonStat(defenseStat) + (defender.ivs[defenseStat] < 31 ? " " + defender.ivs[defenseStat] + " 个体值" : "");
 
     //b. Wonder Room
 

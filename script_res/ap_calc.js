@@ -1775,8 +1775,9 @@ function calculate() {
     //temp_crit = bestResult.crit;
     bestResult.prop("checked", true);
     bestResult.change();
-    $("#resultHeaderL").text(p1.name + "'s Moves (select one to show detailed results)");
-    $("#resultHeaderR").text(p2.name + "'s Moves (select one to show detailed results)");
+    var _t_pk = function(v) { return typeof translate_pokemon === "function" ? translate_pokemon(v) : v; };
+    $("#resultHeaderL").text(_t_pk(p1.name) + " 的招式 (选择一个以查看详细结果)");
+    $("#resultHeaderR").text(_t_pk(p2.name) + " 的招式 (选择一个以查看详细结果)");
 }
 
 $(".result-move").change(function() {
@@ -2609,19 +2610,26 @@ function getGen() {
 function setStartup(p) {
     $(p + " .set-selector").select2({
         formatResult: function (object) {
-            return object.set ? ("&nbsp;&nbsp;&nbsp;" + object.set) : ("<b>" + object.text + "</b>");
+            var t_name = typeof translate_pokemon === "function" ? translate_pokemon(object.pokemon || object.text) : (object.pokemon || object.text);
+            var t_set = object.set === "Blank Set" ? "空白集" : object.set;
+            return object.set ? ("&nbsp;&nbsp;&nbsp;" + t_set) : ("<b>" + t_name + "</b>");
+        },
+        formatSelection: function (object) {
+            var t_name = typeof translate_pokemon === "function" ? translate_pokemon(object.pokemon || object.text) : (object.pokemon || object.text);
+            var t_set = object.set === "Blank Set" ? "空白集" : object.set;
+            return object.set ? (t_name + " (" + t_set + ")") : t_name;
         },
         query: function (query) {
             var setOptions = getSetOptions(p);
             var pageSize = 30;
             var results = [];
+            var hasTranslator = typeof translate_pokemon === "function";
             for (var i = 0, n = setOptions.length; i < n; i++) {
                 var pokeName = setOptions[i].pokemon.toUpperCase();
-                //if (!query.term || pokeName.indexOf(query.term.toUpperCase()) === 0) {
-                //    results.push(setOptions[i]);
-                //}
-                if (!query.term || query.term.toUpperCase().split(" ").every(function (term) {
-                    return pokeName.indexOf(term) === 0 || pokeName.includes("-" + term) || pokeName.includes(" " + term);
+                var cnName = hasTranslator ? translate_pokemon(setOptions[i].pokemon) : "";
+                if (!query.term || query.term.split(" ").every(function (term) {
+                    var uTerm = term.toUpperCase();
+                    return pokeName.indexOf(uTerm) === 0 || pokeName.includes("-" + uTerm) || pokeName.includes(" " + uTerm) || (cnName && cnName.indexOf(term) !== -1);
                 }))
                     results.push(setOptions[i]);
             }
