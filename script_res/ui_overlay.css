@@ -377,3 +377,11 @@ body:not(.dark) #pbo-page-loader {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* === Responsive Generation Buttons === */
+.generations label.btn-small {
+    width: auto !important;
+    min-width: 4em;
+    padding-left: 0.8em;
+    padding-right: 0.8em;
+}

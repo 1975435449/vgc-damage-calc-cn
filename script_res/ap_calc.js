@@ -2602,8 +2602,8 @@ function getGen() {
         $("#gen" + genLocalStor).change();
     }
     else {
-        $("#gen10").prop("checked", true);
-        $("#gen10").change();
+        $("#gen9").prop("checked", true);
+        $("#gen9").change();
     }
 }
 
