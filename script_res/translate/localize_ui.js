@@ -323,6 +323,12 @@
         localizeOptions("select.move-opponent", function (value) {
             return "招式 " + value;
         });
+        localizeOptions("select#toggleResult", function (value, text) {
+            return textFromValue(text);
+        });
+        localizeOptions("select.move-pledge", function (value) {
+            return callTranslator("translate_move", value);
+        });
     }
 
     function localizeFieldLabels() {
@@ -374,7 +380,7 @@
     function localizeStaticUi(opts) {
         opts = opts || {};
         
-        const els = document.querySelectorAll("label, button, option, th, td, h1, h2, h3, span, p");
+        const els = document.querySelectorAll("label, button, th, td, h1, h2, h3, span, p");
         for (let i = 0; i < els.length; i++) {
             replaceOwnText(els[i]);
         }

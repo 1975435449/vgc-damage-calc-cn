@@ -1368,7 +1368,7 @@ function showFormes(formeObj, setName, pokemonName, pokemon) {
     if (pokemonName === "Palafin" || pokemonName === "Terapagos")
         defaultForme = 1;
 
-    var formeOptions = getSelectOptions(pokemon.formes, false, defaultForme);
+    var formeOptions = getSelectOptions(pokemon.formes, false, defaultForme, "translate_pokemon");
     formeObj.children("select").find("option").remove().end().append(formeOptions).change();
     formeObj.show();
 }
