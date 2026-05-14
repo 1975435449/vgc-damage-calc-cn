@@ -1,11 +1,43 @@
-# VGC 2026 Damage Calculator
-Originally the official Nuggetbridge damage calculator 2015-2016, later adapted for Trainer Tower 2017-2020, now adapted for Nimbasa City Post from 2021-present. Maintained and developed by nerd-of-now.
+# ⚔️ VGC 2026 宝可梦伤害计算器 (中文汉化版)
 
-If there are inaccuracies please submit an issue or pull request!
+这是一个专为宝可梦 VGC 双打与单打赛事量身定制的**完全中文化、高性能、零延迟**伤害计算器。
 
-Credits and license
--------------------
+基于社区优秀开源项目深度定制，专为中文玩家与 PBO Wiki 社区进行了全面的重构与本地化适配。
 
-MIT License.
+---
 
-Written by Honko. VGC 2015 Update by Tapin and Firestorm. VGC 2016, 2017, 2018, 2019, and 2020 done by squirrelboyVGC. VGC 2021 onwards done by nerd-of-now.
+## ✨ 核心特性与深度优化
+
+### 1. 💯 极度彻底的全语言汉化
+*   **UI 界面全汉化**：招式类别、性格修正、天气场地、道具特性等所有面板文本完美汉化。
+*   **核心引擎重构**：重写了 `ko_chance.js` 与 `damage_MASTER.js` 的底层句子生成模板，计算结果以符合中文语法的 `“确定一击KO”`、`“有 X% 的机率一击KO”` 以及详细的场地/特性判定状态完美呈现。
+
+### 2. ⚡ 史诗级性能优化与无感搜索
+*   **Select2 组件重写**：彻底解决了原版在大列表加载与搜索宝可梦配置集时的**严重卡顿**问题。
+*   **实时名称翻译**：支持在下拉选择框中瞬间显示中文名称，交互丝滑无比。
+*   **完美夜间模式**：内置深色/浅色主题一键切换，护眼且极具质感。
+
+### 3. 🗺️ 多世代完美兼容
+*   从 **红绿 (第一世代)** 延续至 **极巨化 (第八世代)**、**太晶化 (第九世代)**，并专为最新的 **VGC 2026 冠军系列** 规则做了前沿适配与配置集整合。
+*   集成包含 Legends Z-A 以及 Let's Go 专属伤害判定规则。
+
+---
+
+## 🌐 免费在线使用
+您可以直接通过 GitHub Pages 访问并在线使用该工具：
+👉 **[https://1975435449.github.io/vgc-damage-calc-cn/](https://1975435449.github.io/vgc-damage-calc-cn/)**
+
+---
+
+## 🤝 致谢与开源协议
+
+### 开源致谢
+本工具基于众多宝可梦社区开发者的杰出贡献，版本迭代历程：
+*   **核心逻辑**: Written by Honko.
+*   **VGC 2015 升级**: Tapin 和 Firestorm.
+*   **VGC 2016 - 2020**: Done by squirrelboyVGC (曾在 Nugget Bridge 和 Trainer Tower 托管)。
+*   **VGC 2021 至今 (NCP 版)**: Developed by [nerd-of-now](https://github.com/nerd-of-now/NCP-VGC-Damage-Calculator)。
+*   **中文本地化与性能重写**: 感谢 PBO Wiki 开发者的深度适配。
+
+### 授权协议
+本项目沿用 **MIT License**。欢迎提交 Issue 或 Pull Request 共同维护数据准确性。
