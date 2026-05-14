@@ -17,6 +17,19 @@ body {
 }
 
 /* ===== Panel card style ===== */
+/* ===== Result area ===== */
+.move-result-group {
+    display: flow-root; /* Crucial: contains floated subgroups to prevent layout collapse */
+    min-width: 0 !important;
+    margin: 1em 0 1em !important;
+}
+
+.main-result-group {
+    margin: 0.5em 0 1em !important;
+    clear: both; /* Stabilize sibling relations */
+}
+
+/* ===== Panel card style ===== */
 .panel {
     border-radius: 6px;
     overflow: hidden;
@@ -24,18 +37,16 @@ body {
     margin-bottom: 8px;
 }
 
+.mobile-tab-content {
+    clear: both; /* Ensures result area clears any header floats */
+}
+
+#p1 {
+    clear: both; /* Guarantees the 3 panels start on a new line below results */
+}
+
 .panel-heading {
     border-radius: 6px 6px 0 0;
-}
-
-/* ===== Result area ===== */
-.move-result-group {
-    min-width: 0 !important;
-    margin: 1em 0 1em !important;
-}
-
-.main-result-group {
-    margin: 0.5em 0 1em !important;
 }
 
 /* ===== Theme / Dex button spacing ===== */
@@ -64,9 +75,10 @@ body {
 /* ===== Mobile layout (when 3 panels can't fit side by side) =====
    Panels need 40em + 30em + 40em = 110em = 1320px (at 12px base font)
    Plus panel margins (3 × 2 × 5px = 30px) = 1350px minimum content width.
-   Plus body + wrapper padding ≈ 48px.
-   Total viewport needed ≈ 1400px. */
-@media (max-width: 1400px) {
+   Plus body + wrapper padding ≈ 60px.
+   Total viewport needed ≈ 1410px (≈1430px with scrollbar).
+   Safest responsive threshold ≈ 1440px. */
+@media (max-width: 1440px) {
     /* Hide all panels by default; tabs control visibility */
     .panel[data-panel] {
         display: none;
@@ -256,4 +268,112 @@ body {
 .dark .mobile-tab.active {
     background: #161b22;
     color: #e6edf3;
+}
+
+/* ===== High-end PBO Loading Shield ===== */
+#pbo-page-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99999;
+    background-color: #0d1117; /* Default dark theme background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    color: #e6edf3;
+    transition: opacity 0.3s ease;
+}
+
+/* Light mode adjustment for loader */
+body:not(.dark) #pbo-page-loader {
+    background-color: #f0f4f3;
+    color: #111;
+}
+
+.loader-container {
+    text-align: center;
+    animation: pboFadeIn 0.4s ease-out;
+}
+
+/* Spinning Pokeball style loader */
+.pbo-pokeball-spinner {
+    width: 60px;
+    height: 60px;
+    background: #fff;
+    border-radius: 50%;
+    border: 3px solid #333;
+    position: relative;
+    margin: 0 auto 20px;
+    animation: pboSpin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    box-shadow: inset -5px -5px 0 rgba(0,0,0,0.05);
+}
+
+.pbo-pokeball-spinner::before {
+    content: '';
+    position: absolute;
+    background: #ce0000; /* PBO accent red */
+    width: 100%;
+    height: 50%;
+    border-radius: 30px 30px 0 0;
+    top: -1.5px;
+    left: -1.5px;
+    border: 3px solid #333;
+    border-bottom: none;
+    box-sizing: border-box;
+}
+
+.pbo-pokeball-spinner::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background: #fff;
+    border: 3px solid #333;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    box-shadow: 0 0 0 3px #fff;
+}
+
+.pbo-pokeball-spinner-line {
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    background: #333;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 5;
+}
+
+.loader-title {
+    font-size: 1.1em;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.loader-subtitle {
+    font-size: 0.85em;
+    opacity: 0.7;
+    animation: pboPulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pboSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes pboPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 0.9; }
+}
+
+@keyframes pboFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }

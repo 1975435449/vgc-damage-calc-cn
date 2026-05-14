@@ -2671,6 +2671,14 @@ $(document).ready(function () {
     });
     resetSetSelectors();
     storedSetFixes();
+
+    // Dismiss loading shield after full initialization
+    var $loader = $("#pbo-page-loader");
+    if ($loader.length) {
+        $loader.fadeOut(350, function() {
+            $(this).remove();
+        });
+    }
 });
 
 //var testCalls = 0;
