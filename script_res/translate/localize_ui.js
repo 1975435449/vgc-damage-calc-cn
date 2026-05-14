@@ -213,6 +213,12 @@
         if (ability !== value) return ability;
         const item = callTranslator("translate_item", value);
         if (item !== value) return item;
+        const pokemon = callTranslator("translate_pokemon", value);
+        if (pokemon !== value) return pokemon;
+        const nature = callTranslator("translate_nature", value);
+        if (nature !== value) return nature;
+        const ko = callTranslator("translate_ko_text", value);
+        if (ko !== value) return ko;
         return value;
     }
 
@@ -346,4 +352,15 @@
         window.setTimeout(localizeStaticUi, 0);
         window.setTimeout(localizeStaticUi, 50);
     });
+
+    /* MutationObserver catches ALL dynamically inserted text (pokemon names, damage results, etc.)
+       Disconnect → translate → reconnect avoids infinite loop from our own text changes. */
+    var localizeObserver = new MutationObserver(function () {
+        localizeObserver.disconnect();
+        window.setTimeout(function () {
+            localizeStaticUi();
+            localizeObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
+        }, 80);
+    });
+    localizeObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
 })();
