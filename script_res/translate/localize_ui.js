@@ -351,7 +351,16 @@
 
     window.localizeStaticUi = localizeStaticUi;
 
-    $(document).ready(function () { localizeStaticUi(); });
+    /* Delay initial localization so the browser paints the page first.
+       Avoids black screen / layout jank on first load. */
+    $(document).ready(function () {
+        window.setTimeout(function () {
+            localizeStaticUi();
+            /* Start MutationObserver only after initial localization is done */
+            localizeObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
+        }, 150);
+    });
+
     $(document).on("change", "select.nature, select.status, select.move-cat, select.type1, select.type2, select.tera-type, select.move-type, select.move-selector, select.ability, select.item", function () {
         /* Select changed: full localization with Select2 refresh (dropdown already closed) */
         window.setTimeout(function () { localizeStaticUi(); }, 50);
@@ -364,7 +373,8 @@
 
     /* MutationObserver catches dynamically inserted text (pokemon names, damage results, etc.).
        Disconnect → translate → reconnect avoids infinite loop.
-       Debounced at 200ms and skips Select2 refresh to avoid closing open dropdowns. */
+       Debounced at 200ms and skips Select2 refresh to avoid closing open dropdowns.
+       Started AFTER initial localization to avoid observing page setup. */
     var localizeObserver = new MutationObserver(function () {
         /* Don't localize while user is interacting with a select/Select2 dropdown */
         if (document.activeElement && document.activeElement.tagName === 'SELECT') return;
@@ -376,5 +386,4 @@
             localizeObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
         }, 200);
     });
-    localizeObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
 })();
