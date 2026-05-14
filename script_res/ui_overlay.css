@@ -9,11 +9,12 @@ body {
     background-color: #f0f4f3 !important;
 }
 
-/* Remove wrapper max-width so panels can fit side by side.
-   Original nb_calc.css sets max-width:1350px which is too narrow
-   for three panels (1320px + margins = 1350px + wrapper padding). */
+/* Wrapper max-width: original 1350px is too narrow for 3 panels.
+   Panels: 40+30+40=110em (1320px at 12px) + margins 30px = 1350px.
+   Plus wrapper padding 24px → need 1374px minimum.
+   1450px gives comfortable breathing room. */
 .wrapper {
-    max-width: none;
+    max-width: 1450px;
 }
 
 /* ===== Panel card style ===== */
