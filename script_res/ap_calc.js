@@ -2175,6 +2175,7 @@ function Side(format, terrain, weather, isGravity, isSR, spikes, isReflect, isLi
 var gen, pokedex, setdex, setdexCustom, typeChart, moves, abilities, items, STATS, calculateAllMoves, calcHP, calcStat;
 
 $(".gen").change(function () {
+    if (window.pauseLocalizeObserver) window.pauseLocalizeObserver();
     var genStr = $(this).val();
     gen = +genStr;
 
@@ -2384,17 +2385,17 @@ $(".gen").change(function () {
     if (gen >= 2) types.push('Typeless');
     if (types.includes('Stellar'))
         types.splice(types.indexOf('Stellar'), 1);
-    var typeOptions = getSelectOptions(types);
-    var teraTypeOptions = getSelectOptions(teraTypes);
+    var typeOptions = getSelectOptions(types, false, 0, "translate_type");
+    var teraTypeOptions = getSelectOptions(teraTypes, false, 0, "translate_type");
     $("select.type1, select.move-type").find("option").remove().end().append(typeOptions);
-    $("select.type2").find("option").remove().end().append("<option value=\"\">(none)</option>" + typeOptions);
+    $("select.type2").find("option").remove().end().append("<option value=\"\">（无）</option>" + typeOptions);
     $("select.tera-type").find("option").remove().end().append(teraTypeOptions);
-    var moveOptions = getSelectOptions(Object.keys(moves), true);
+    var moveOptions = getSelectOptions(Object.keys(moves), true, 0, "translate_move");
     $("select.move-selector").find("option").remove().end().append(moveOptions);
-    var abilityOptions = getSelectOptions(abilities, true);
-    $("select.ability").find("option").remove().end().append("<option value=\"\">(other)</option>" + abilityOptions);
-    var itemOptions = getSelectOptions(items, true);
-    $("select.item").find("option").remove().end().append("<option value=\"\">(none)</option>" + itemOptions);
+    var abilityOptions = getSelectOptions(abilities, true, 0, "translate_ability");
+    $("select.ability").find("option").remove().end().append("<option value=\"\">（其他）</option>" + abilityOptions);
+    var itemOptions = getSelectOptions(items, true, 0, "translate_item");
+    $("select.item").find("option").remove().end().append("<option value=\"\">（无）</option>" + itemOptions);
 
     $(".delset").hide();
     resetSetSelectors();
@@ -2402,6 +2403,8 @@ $(".gen").change(function () {
     $(".sidebarAdd").show();
     loadSidebar(1);
     loadSidebar(2);
+    if (window.resumeLocalizeObserver) window.resumeLocalizeObserver();
+    if (window.localizeStaticUi) window.localizeStaticUi({ skipSelect2: true });
 });
 
 function clearField() {
@@ -2566,7 +2569,7 @@ function getSetOptions(p) {
     return setOptions;
 }
 
-function getSelectOptions(arr, sort, defaultIdx) {
+function getSelectOptions(arr, sort, defaultIdx, translatorName) {
     if (sort) {
         arr.sort();
     }
@@ -2575,11 +2578,14 @@ function getSelectOptions(arr, sort, defaultIdx) {
     if (!defaultIdx) {
         defaultIdx = 0;
     }
+    var translator = translatorName && typeof window[translatorName] === "function" ? window[translatorName] : null;
     for (var i = 0, n = arr.length; i < n; i++) {
+        var val = arr[i];
+        var text = translator ? translator(val) : val;
         if (i === defaultIdx) {
-            r += '<option value="' + arr[i] + '" selected="selected">' + arr[i] + '</option>';
+            r += '<option value="' + val + '" selected="selected">' + text + '</option>';
         } else {
-            r += '<option value="' + arr[i] + '">' + arr[i] + '</option>';
+            r += '<option value="' + val + '">' + text + '</option>';
         }
     }
     return r;

@@ -195,6 +195,34 @@
         "Opposite": "异性别"
     };
 
+    var localizeObserver = null;
+    var isObserverPaused = false;
+
+    window.pauseLocalizeObserver = function () {
+        isObserverPaused = true;
+        if (localizeObserver) {
+            localizeObserver.disconnect();
+            if (localizeObserver._tid) {
+                clearTimeout(localizeObserver._tid);
+            }
+        }
+    };
+
+    window.resumeLocalizeObserver = function () {
+        isObserverPaused = false;
+        if (localizeObserver) {
+            localizeObserver.observe(document.body, { 
+                childList: true, 
+                subtree: true, 
+                characterData: true,
+                attributes: true,
+                attributeFilter: ["title"]
+            });
+        }
+    };
+
+    const TRANSLATION_CACHE = {};
+
     function callTranslator(name, value) {
         if (value == null || value === "") return value;
         if (typeof window[name] !== "function") return value;
@@ -202,24 +230,26 @@
     }
 
     function textFromValue(value) {
-        if (Object.prototype.hasOwnProperty.call(TEXT_MAP, value)) return TEXT_MAP[value];
-        const field = callTranslator("translate_field", value);
-        if (field !== value) return field;
-        const type = callTranslator("translate_type", value);
-        if (type !== value) return type;
-        const move = callTranslator("translate_move", value);
-        if (move !== value) return move;
-        const ability = callTranslator("translate_ability", value);
-        if (ability !== value) return ability;
-        const item = callTranslator("translate_item", value);
-        if (item !== value) return item;
-        const pokemon = callTranslator("translate_pokemon", value);
-        if (pokemon !== value) return pokemon;
-        const nature = callTranslator("translate_nature", value);
-        if (nature !== value) return nature;
-        const ko = callTranslator("translate_ko_text", value);
-        if (ko !== value) return ko;
-        return value;
+        if (typeof value !== "string" || value === "") return value;
+        if (/[\u4e00-\u9fa5]/.test(value)) return value;
+        if (Object.prototype.hasOwnProperty.call(TRANSLATION_CACHE, value)) {
+            return TRANSLATION_CACHE[value];
+        }
+        let result = value;
+        if (Object.prototype.hasOwnProperty.call(TEXT_MAP, value)) {
+            result = TEXT_MAP[value];
+        } else {
+            const translators = ["translate_field", "translate_type", "translate_move", "translate_ability", "translate_item", "translate_pokemon", "translate_nature", "translate_ko_text"];
+            for (let i = 0; i < translators.length; i++) {
+                const t = callTranslator(translators[i], value);
+                if (t !== value) {
+                    result = t;
+                    break;
+                }
+            }
+        }
+        TRANSLATION_CACHE[value] = result;
+        return result;
     }
 
     function natureText(value) {
@@ -229,31 +259,40 @@
         return translated + " (+" + STAT_NAMES[effect[0]] + ", -" + STAT_NAMES[effect[1]] + ")";
     }
 
-    function replaceOwnText(node) {
-        node.contents().filter(function () {
-            return this.nodeType === 3;
-        }).each(function () {
-            const original = this.nodeValue.trim();
-            if (!original) return;
-            if (Object.prototype.hasOwnProperty.call(TEXT_MAP, original)) {
-                this.nodeValue = this.nodeValue.replace(original, TEXT_MAP[original]);
-            } else if (original.length > 2) {
-                const translated = textFromValue(original);
-                if (translated !== original) {
-                    this.nodeValue = this.nodeValue.replace(original, translated);
+    function replaceOwnText(domNode) {
+        if (!domNode) return;
+        const childNodes = domNode.childNodes;
+        for (let i = 0; i < childNodes.length; i++) {
+            const child = childNodes[i];
+            if (child.nodeType === 3) { // Node.TEXT_NODE
+                const original = child.nodeValue.trim();
+                if (!original) continue;
+                if (/[\u4e00-\u9fa5]/.test(original)) continue;
+                if (Object.prototype.hasOwnProperty.call(TEXT_MAP, original)) {
+                    child.nodeValue = child.nodeValue.replace(original, TEXT_MAP[original]);
+                } else if (original.length > 2) {
+                    const translated = textFromValue(original);
+                    if (translated !== original) {
+                        child.nodeValue = child.nodeValue.replace(original, translated);
+                    }
                 }
             }
-        });
+        }
     }
 
     function localizeOptions(selector, resolver) {
-        $(selector).find("option").each(function () {
-            const value = $(this).val();
-            const nextText = resolver(value, $(this).text());
-            if (nextText != null && $(this).text() !== nextText) {
-                $(this).text(nextText);
+        const selects = document.querySelectorAll(selector);
+        for (let i = 0; i < selects.length; i++) {
+            const opts = selects[i].getElementsByTagName("option");
+            for (let j = 0; j < opts.length; j++) {
+                const opt = opts[j];
+                const value = opt.value;
+                const nextText = resolver(value, opt.textContent);
+                if (nextText != null && opt.textContent !== nextText) {
+                    opt.textContent = nextText;
+                }
             }
-        });
+        }
     }
 
     function localizeStructuredSelects() {
@@ -287,33 +326,41 @@
     }
 
     function localizeFieldLabels() {
-        $("label[for]").each(function () {
-            const rawId = $(this).attr("for");
-            const escapedId = $.escapeSelector ? $.escapeSelector(rawId) : rawId.replace(/([ #;&,.+*~':"!^$[\]()=>|/@])/g, "\\$1");
-            const target = $("#" + escapedId);
-            if (!target.length) return;
-            const value = target.val();
-            if (target.is("input[type='radio'], input[type='checkbox']")) {
+        const labels = document.querySelectorAll("label[for]");
+        for (let i = 0; i < labels.length; i++) {
+            const label = labels[i];
+            const id = label.getAttribute("for");
+            if (!id) continue;
+            const target = document.getElementById(id);
+            if (!target) continue;
+            if (target.type === "radio" || target.type === "checkbox") {
+                const value = target.value;
                 const nextText = textFromValue(value);
-                if (nextText && nextText !== value || Object.prototype.hasOwnProperty.call(TEXT_MAP, value)) {
-                    $(this).text(nextText || TEXT_MAP[value]);
+                if ((nextText && nextText !== value) || Object.prototype.hasOwnProperty.call(TEXT_MAP, value)) {
+                    const finalVal = nextText || TEXT_MAP[value];
+                    if (label.textContent !== finalVal) {
+                        label.textContent = finalVal;
+                    }
                 }
             }
-        });
+        }
     }
 
     function localizeTitleAttrs() {
-        $("[title]").each(function () {
-            const title = $(this).attr("title");
-            if (!title) return;
+        const els = document.querySelectorAll("[title]");
+        for (let i = 0; i < els.length; i++) {
+            const el = els[i];
+            const title = el.getAttribute("title");
+            if (!title) continue;
             if (Object.prototype.hasOwnProperty.call(TITLE_MAP, title)) {
-                $(this).attr("title", TITLE_MAP[title]);
-                return;
+                el.setAttribute("title", TITLE_MAP[title]);
+            } else if (el.classList.contains("pkmnsc")) {
+                const translated = callTranslator("translate_pokemon", title);
+                if (translated !== title) {
+                    el.setAttribute("title", translated);
+                }
             }
-            if ($(this).hasClass("pkmnsc")) {
-                $(this).attr("title", callTranslator("translate_pokemon", title));
-            }
-        });
+        }
     }
 
     function refreshSelect2(selectors) {
@@ -326,22 +373,36 @@
 
     function localizeStaticUi(opts) {
         opts = opts || {};
-        $("label, button, option, th, td, h1, h2, h3, span, p").each(function () {
-            replaceOwnText($(this));
-        });
+        
+        const els = document.querySelectorAll("label, button, option, th, td, h1, h2, h3, span, p");
+        for (let i = 0; i < els.length; i++) {
+            replaceOwnText(els[i]);
+        }
 
         localizeStructuredSelects();
         localizeFieldLabels();
         localizeTitleAttrs();
 
-        $(".percent-hp").attr("title", "当前 HP 百分比");
-        $(".current-hp").attr("title", "当前 HP");
-        $(".tera").next("label").text("太晶化");
-        $(".setCalc").each(function () {
-            if ($(this).val() === "My Calc Set") {
-                $(this).val("个人配置");
+        const percentHps = document.querySelectorAll(".percent-hp");
+        for (let i = 0; i < percentHps.length; i++) percentHps[i].setAttribute("title", "当前 HP 百分比");
+
+        const currentHps = document.querySelectorAll(".current-hp");
+        for (let i = 0; i < currentHps.length; i++) currentHps[i].setAttribute("title", "当前 HP");
+
+        const teras = document.querySelectorAll(".tera");
+        for (let i = 0; i < teras.length; i++) {
+            const label = teras[i].nextElementSibling;
+            if (label && label.tagName === 'LABEL') {
+                label.textContent = "太晶化";
             }
-        });
+        }
+
+        const setCalcs = document.querySelectorAll(".setCalc");
+        for (let i = 0; i < setCalcs.length; i++) {
+            if (setCalcs[i].value === "My Calc Set") {
+                setCalcs[i].value = "个人配置";
+            }
+        }
 
         /* Skip Select2 refresh when triggered by observer — it closes open dropdowns */
         if (!opts.skipSelect2) {
@@ -357,7 +418,13 @@
         window.setTimeout(function () {
             localizeStaticUi();
             /* Start MutationObserver only after initial localization is done */
-            localizeObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
+            localizeObserver.observe(document.body, { 
+                childList: true, 
+                subtree: true, 
+                characterData: true,
+                attributes: true,
+                attributeFilter: ["title"]
+            });
         }, 150);
     });
 
@@ -365,9 +432,9 @@
         /* Select changed: full localization with Select2 refresh (dropdown already closed) */
         window.setTimeout(function () { localizeStaticUi(); }, 50);
     });
-    $(document).on("click change mouseenter", "#switchTheme, #switchDex, .gen, .dex-change, .set-toggle, input[type='radio'], input[type='checkbox'], [title]", function () {
-        /* Other interactions: text-only, no Select2 refresh to avoid UI jank */
-        window.setTimeout(function () { localizeStaticUi({ skipSelect2: true }); }, 0);
+    
+    $(document).on("click change", "#switchTheme, #switchDex, .gen, .dex-change, .set-toggle, input[type='radio'], input[type='checkbox']", function () {
+        /* Other interactions: text-only, no Select2 refresh to avoid UI jank. Completely removed mouseenter binding. */
         window.setTimeout(function () { localizeStaticUi({ skipSelect2: true }); }, 50);
     });
 
@@ -375,7 +442,8 @@
        Disconnect → translate → reconnect avoids infinite loop.
        Debounced at 200ms and skips Select2 refresh to avoid closing open dropdowns.
        Started AFTER initial localization to avoid observing page setup. */
-    var localizeObserver = new MutationObserver(function () {
+    localizeObserver = new MutationObserver(function () {
+        if (isObserverPaused) return;
         /* Don't localize while user is interacting with a select/Select2 dropdown */
         if (document.activeElement && document.activeElement.tagName === 'SELECT') return;
         if (document.querySelector('.select2-dropdown-open')) return;
@@ -383,7 +451,13 @@
         clearTimeout(localizeObserver._tid);
         localizeObserver._tid = window.setTimeout(function () {
             localizeStaticUi({ skipSelect2: true });
-            localizeObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
+            localizeObserver.observe(document.body, { 
+                childList: true, 
+                subtree: true, 
+                characterData: true,
+                attributes: true,
+                attributeFilter: ["title"]
+            });
         }, 200);
     });
 })();

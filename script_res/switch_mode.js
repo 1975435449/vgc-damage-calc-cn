@@ -174,6 +174,7 @@ function loadSVColors(theme) {																    //
 }																								//
 
 function loadDex(dexMode) {
+	if (window.pauseLocalizeObserver) window.pauseLocalizeObserver();
 	if (dexMode === "natdex") {
 		switch (gen) {
 			case 8: //Gen 8 SwSh+BDSP
@@ -277,20 +278,22 @@ function loadDex(dexMode) {
 		if (gen >= 2) types.push('Typeless');
 		if (types.indexOf('Stellar') !== -1)
 			types.splice(types.indexOf('Stellar'), 1);
-		var typeOptions = getSelectOptions(types);
-		var teraTypeOptions = getSelectOptions(teraTypes);
+		var typeOptions = getSelectOptions(types, false, 0, "translate_type");
+		var teraTypeOptions = getSelectOptions(teraTypes, false, 0, "translate_type");
     }
 	$("select.type1, select.move-type").find("option").remove().end().append(typeOptions);
-	$("select.type2").find("option").remove().end().append("<option value=\"\">(none)</option>" + typeOptions);
+	$("select.type2").find("option").remove().end().append("<option value=\"\">（无）</option>" + typeOptions);
 	$("select.tera-type").find("option").remove().end().append(teraTypeOptions);
-	var moveOptions = getSelectOptions(Object.keys(moves), true);
+	var moveOptions = getSelectOptions(Object.keys(moves), true, 0, "translate_move");
 	$("select.move-selector").find("option").remove().end().append(moveOptions);
-	var abilityOptions = getSelectOptions(abilities, true);
-	$("select.ability").find("option").remove().end().append("<option value=\"\">(other)</option>" + abilityOptions);
-	var itemOptions = getSelectOptions(items, true);
-	$("select.item").find("option").remove().end().append("<option value=\"\">(none)</option>" + itemOptions);
+	var abilityOptions = getSelectOptions(abilities, true, 0, "translate_ability");
+	$("select.ability").find("option").remove().end().append("<option value=\"\">（其他）</option>" + abilityOptions);
+	var itemOptions = getSelectOptions(items, true, 0, "translate_item");
+	$("select.item").find("option").remove().end().append("<option value=\"\">（无）</option>" + itemOptions);
 
 	resetSetSelectors();
+	if (window.resumeLocalizeObserver) window.resumeLocalizeObserver();
+	if (window.localizeStaticUi) window.localizeStaticUi({ skipSelect2: true });
 }
 
 function loadSets(p) {

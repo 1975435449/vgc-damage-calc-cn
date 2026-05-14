@@ -3479,7 +3479,7 @@ function translate_pokemon(name) {
         }
     }
 
-    console.warn('not translated',name);
+    // console.warn('not translated',name);
 
     return name;
 }
