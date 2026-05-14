@@ -5,7 +5,7 @@
 /* ===== Reset overrides ===== */
 body {
     min-width: 0 !important;
-    font: 14px/1.5 "Noto Sans SC", "Noto Sans", Verdana, sans-serif !important;
+    font-family: "Noto Sans SC", "Noto Sans", Verdana, sans-serif !important;
     background-color: #f0f4f3 !important;
 }
 
@@ -257,14 +257,6 @@ body {
     .footer {
         font-size: 0.7em;
     }
-}
-
-/* ===== Panel widths (compensate 12px→14px font change) ===== */
-.poke-info {
-    width: 34.3em;
-}
-.field-info {
-    width: 25.7em;
 }
 
 /* ===== Desktop: default visible panels ===== */

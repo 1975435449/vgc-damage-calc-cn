@@ -228,8 +228,14 @@
             return this.nodeType === 3;
         }).each(function () {
             const original = this.nodeValue.trim();
+            if (!original) return;
             if (Object.prototype.hasOwnProperty.call(TEXT_MAP, original)) {
                 this.nodeValue = this.nodeValue.replace(original, TEXT_MAP[original]);
+            } else if (original.length > 2) {
+                const translated = textFromValue(original);
+                if (translated !== original) {
+                    this.nodeValue = this.nodeValue.replace(original, translated);
+                }
             }
         });
     }
@@ -336,7 +342,7 @@
     window.localizeStaticUi = localizeStaticUi;
 
     $(document).ready(localizeStaticUi);
-    $(document).on("click change mouseenter", "#switchDex, .gen, .dex-change, .set-toggle, select, input[type='radio'], input[type='checkbox'], [title]", function () {
+    $(document).on("click change mouseenter", "#switchTheme, #switchDex, .gen, .dex-change, .set-toggle, select, input[type='radio'], input[type='checkbox'], [title]", function () {
         window.setTimeout(localizeStaticUi, 0);
         window.setTimeout(localizeStaticUi, 50);
     });
