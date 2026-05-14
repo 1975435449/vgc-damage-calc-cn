@@ -1,76 +1,44 @@
 ﻿<!doctype HTML>
-<html lang="us" xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://ogp.me/ns#">
-<!--<script>
-    (function (i, s, o, g, r, a, m) {
-    i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
-        (i[r].q = i[r].q || []).push(arguments)
-    }, i[r].l = 1 * new Date(); a = s.createElement(o),
-        m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
-    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
-
-    ga('create', 'UA-86401070-1', 'auto');
-    ga('send', 'pageview');
-
-
-
-</script>-->
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://ogp.me/ns#">
     <head>
         <link rel="icon" type="image/png" href="image_res/Favicon-32px.ico">
-        <link rel="image_src" href="image_res/Logo Nimbasa City Post PNG.png" />
 
-        <meta property="og:title" content="Nimbasa City Post Damage Calculator" />
+        <meta property="og:title" content="VGC 2026 宝可梦伤害计算器" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="image_res/Logo Nimbasa City Post PNG.png" />
 
         <meta charset="UTF-8" />
-        <title>Pokémon Damage Calculator</title>
-        <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+        <title>VGC 2026: Champions 宝可梦伤害计算器</title>
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
         <link type="text/css" rel="stylesheet" href="script_res/select2.css" />
         <link type="text/css" rel="stylesheet" href="script_res/ap_calc.css" />
         <link type="text/css" rel="stylesheet" href="script_res/nb_calc.css" />
-        <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
+        <link type="text/css" rel="stylesheet" href="script_res/ui_overlay.css" />
     </head>
     <body class="dark">
-        <div class="header">
-            <div class="wrapper">
-                <span class="header-logo"><a href="http://nimbasacitypost.com" target="_blank" rel="noopener noreferrer"><img src="image_res/Logo Nimbasa City Post White Text PNG.png" alt="Nimbasa City Post" style="height: 45px;padding-top: 5px;" /></a></span><span class="nav"><a href="http://nimbasacitypost.com" target="_blank" rel="noopener noreferrer">Home</a> | <a href="http://play.pokemonshowdown.com/vgc" target="_blank" rel="noopener noreferrer">Showdown</a> | <a href="https://statcrusher.com/" target="_blank" rel="noopener noreferrer">StatCrusher</a> | <a href="https://docs.google.com/spreadsheets/d/1axlwmzPA49rYkqXh7zHvAtSP-TKbM0ijGYBPRflLSWw" target="_blank" rel="noopener noreferrer">VGCPastes Repository</a> | <a href="https://github.com/nerd-of-now/NCP-VGC-Damage-Calculator" target="_blank" rel="noopener noreferrer">GitHub Page</a> | <a href="https://www.nimbasacitypost.com/2019/12/vgc-resources.html" target="_blank" rel="noopener noreferrer">Other VGC Resources</a><button class="btn" id="switchTheme">Dark theme</button><input class="btn-input" type="checkbox" id="switchDex" /><label class="btn dex-change gen-specific g8 g9 g10" for="switchDex" title="Include Pokémon that aren't in this gen?">National Dex</label><input class="btn-input" type="checkbox" id="toggleCustMods" /><label class="btn dex-change gen-specific g5 g6 g7 g8 g9 g10" for="toggleCustMods" title="Enable custom modifiers? (Technical; intended for mechanics testing)">Custom Mods</label></span>
-                <div style="clear:both"></div>
-            </div>
-        </div>
         <div class="wrapper">
             <div>
-                <span class="title-text">VGC 2026: Champions Damage Calculator</span>
-                <span class="generations" title="Select the generation.">
-                    <input class="gen btn-input" type="radio" name="gen" value="1" id="gen1" /><label class="btn btn-small btn-left" for="gen1">RBY</label>
-                    <input class="gen btn-input" type="radio" name="gen" value="2" id="gen2" /><label class="btn btn-small btn-mid" for="gen2">GSC</label>
-                    <input class="gen btn-input" type="radio" name="gen" value="3" id="gen3" /><label class="btn btn-small btn-mid" for="gen3">ADV</label>
-                    <input class="gen btn-input" type="radio" name="gen" value="4" id="gen4" /><label class="btn btn-small btn-mid" for="gen4">DPP</label>
-                    <input class="gen btn-input" type="radio" name="gen" value="5" id="gen5" /><label class="btn btn-small btn-mid" for="gen5">B/W</label>
+                <span class="title-text">VGC 2026: Champions 宝可梦伤害计算器</span>
+                <span style="float:right;"><a href="za-calc.html">Legends Z-A</a> | <a href="lgpe-calc.html">Let's Go</a></span>
+                <span class="generations" title="选择世代">
+                    <input class="gen btn-input" type="radio" name="gen" value="1" id="gen1" /><label class="btn btn-small btn-left" for="gen1">红绿</label>
+                    <input class="gen btn-input" type="radio" name="gen" value="2" id="gen2" /><label class="btn btn-small btn-mid" for="gen2">金银</label>
+                    <input class="gen btn-input" type="radio" name="gen" value="3" id="gen3" /><label class="btn btn-small btn-mid" for="gen3">丰缘</label>
+                    <input class="gen btn-input" type="radio" name="gen" value="4" id="gen4" /><label class="btn btn-small btn-mid" for="gen4">珍钻</label>
+                    <input class="gen btn-input" type="radio" name="gen" value="5" id="gen5" /><label class="btn btn-small btn-mid" for="gen5">黑白</label>
                     <input class="gen btn-input" type="radio" name="gen" value="6" id="gen6" /><label class="btn btn-small btn-mid" for="gen6">ORAS</label>
-                    <input class="gen btn-input" type="radio" name="gen" value="7" id="gen7" /><label class="btn btn-small btn-mid" for="gen7">USUM</label>
-                    <input class="gen btn-input" type="radio" name="gen" value="8" id="gen8" /><label class="btn btn-small btn-mid" for="gen8">SWSH</label>
-                    <input class="gen btn-input" type="radio" name="gen" value="9" id="gen9" /><label class="btn btn-small btn-mid" for="gen9">S/V</label>
-                    <input class="gen btn-input" type="radio" name="gen" value="10" id="gen10" checked="checked" /><label class="btn btn-small btn-right" for="gen10">CHAMP</label>
+                    <input class="gen btn-input" type="radio" name="gen" value="7" id="gen7" /><label class="btn btn-small btn-mid" for="gen7">究极</label>
+                    <input class="gen btn-input" type="radio" name="gen" value="8" id="gen8" /><label class="btn btn-small btn-mid" for="gen8">剑盾</label>
+                    <input class="gen btn-input" type="radio" name="gen" value="9" id="gen9" /><label class="btn btn-small btn-mid" for="gen9">朱紫</label>
+                    <input class="gen btn-input" type="radio" name="gen" value="10" id="gen10" checked="checked" /><label class="btn btn-small btn-right" for="gen10">冠军</label>
                 </span>
+                <button class="btn" id="switchTheme">深色主题</button>
+                <input class="btn-input" type="checkbox" id="switchDex" /><label class="btn dex-change gen-specific g8 g9 g10" for="switchDex" title="包含当前世代外的宝可梦？">全国图鉴</label>
+                <input class="btn-input" type="checkbox" id="toggleCustMods" /><label class="btn dex-change gen-specific g5 g6 g7 g8 g9 g10" for="toggleCustMods" title="启用自定义修正？">自定义修正</label>
             </div>
             <hr />
-            <p><br /><br /></p>
-            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-            <!-- Damage Calc Ad (PROBABLY WILL REMAIN UNUSED) -->
-            <!--<ins class="adsbygoogle"
-             style="display:inline-block;width:728px;height:90px"
-             data-ad-client="ca-pub-7571541875475494"
-             data-ad-slot="3642617298"></ins>
-        <script>
-            (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>-->
-            <p>Our new Legends Z-A Damage Calculator is now live! Check it out <a href="za-calc.html"><b>here</b></a>! We also have a Let's Go Pikachu/Eevee Damage Calculator <a href="lgpe-calc.html"><b>here</b></a>.</p>
-            <p>VGC 2026 calculator maintainenance by Alex Collins (<a href="https://twitter.com/nerd_of_now">@nerd_of_now</a>). Basis of the calculator by Jake White (<a href="https://twitter.com/squirrelboydev" target="_blank" rel="noopener noreferrer">@squirrelboydev</a>).</p>
-            <p>
-                Pokémon Champions is here! We're working on curating sets for Regulation M-A.
-                <!--With VGC 2018 getting its own ladder for the month, Gen 7 sets have been updated to be better tuned to the format!-->
-                <!--<br><b><u>This calculator contains spoilers for the Indigo Disk DLC.</u></b> This includes Pokémon, moves, abilities, items, and the new Tera Type. Use at your own discretion.-->
-            </p>
+            <p><br /></p>
+            <p>本计算器基于 <a href="https://github.com/nerd-of-now/NCP-VGC-Damage-Calculator" target="_blank" rel="noopener noreferrer">nerd-of-now</a> 的 NCP VGC Damage Calculator 进行汉化。另有 <a href="za-calc.html"><b>Legends Z-A 计算器</b></a> 和 <a href="lgpe-calc.html"><b>Let's Go 计算器</b></a>。</p>
+            <p>Pokémon Champions 已发布！我们正在为 Regulation M-A 整理配置。</p>
             <select style="float:right;" class="hide calc-trigger gen-specific g10" id="toggleResult" onchange="toggleResultDisplay(this.value)">
                 <option value="SPs">SPs</option>
                 <option value="raw">Actual Stats</option>
@@ -79,18 +47,22 @@
             <!--<br><p>Is there an important or relevant set missing? <a href="https://forms.gle/zBbEnvp2vZ2UADUJA" target="_blank" rel="noopener noreferrer">Give us your suggestion!</a></p>-->
 
             <p>
-                <!--If you like what we do here, please consider supporting us on <a href="https://www.buymeacoffee.com/NCPDamageCalc" target="_blank" rel="noopener noreferrer">Buy Me a Coffee</a>--><!--[HYPERLINK BLOCKED]-->
-                <!--!
-            <br>-->
-                For any issues with or other suggestions for this version of the Damage Calculator, contact Alex on <a href="https://github.com/nerd-of-now/NCP-VGC-Damage-Calculator/issues" target="_blank" rel="noopener noreferrer">Github</a>, <a href="https://bsky.app/profile/nerdofnow.bsky.social" target="_blank" rel="noopener noreferrer">Bluesky</a>, or <a href="https://twitter.com/nerd_of_now" target="_blank" rel="noopener noreferrer">X formerly known as Twitter</a>.
+                如有问题或建议，请通过 <a href="https://github.com/nerd-of-now/NCP-VGC-Damage-Calculator/issues" target="_blank" rel="noopener noreferrer">Github</a> 反馈。
             </p>
             <!-- GEN 7 SET TEMP -->
             <p class="hide gen-specific g6 g7">
                 <br />
-                This generation's set updates are still under construction. If you would like to return to the old Trainer Tower sets, check this box: <input type="checkbox" id="WIPsets" />
+                该世代的配置更新仍在进行中。如需恢复旧的 Trainer Tower 配置，请勾选：<input type="checkbox" id="WIPsets" />
             </p>
 
-            <div class="move-result-group" title="Select a move to show detailed results.">
+            <div class="mobile-tabs">
+                <button class="mobile-tab active" data-target="results">结果</button>
+                <button class="mobile-tab" data-target="p1">宝可梦1</button>
+                <button class="mobile-tab" data-target="field">场地</button>
+                <button class="mobile-tab" data-target="p2">宝可梦2</button>
+            </div>
+            <div class="mobile-tab-content mobile-tab-visible" data-panel="results">
+            <div class="move-result-group" title="选择一个招式查看详细结果。">
                 <div class="move-result-subgroup">
                     <div class="result-move-header"><span id="resultHeaderL">Pokémon 1's Moves (select one to show detailed results)</span></div>
                     <div><input class="result-move btn-input" type="radio" name="resultMove" id="resultMoveL1" checked="checked" /><label class="btn btn-xxxwide btn-top" for="resultMoveL1">Hi Jump Kick</label> <span id="resultDamageL1">??? - ???%</span></div>
@@ -114,7 +86,8 @@
                     <span id="customModValues" style="display: none;">(If this is seen then I think I did something wrong)</span>
                 </div>
             </div>
-            <div class="panel poke-info" id="p1">
+            </div>
+            <div class="panel poke-info" id="p1" data-panel="p1">
                 <div class="panel-heading"><h4 class="panel-title">Pokémon 1</h4></div>
                 <div class="panel-body">
                     <input type="text" class="set-selector calc-trigger" />&nbsp;&nbsp;
@@ -309,7 +282,7 @@
                     </div>
                 </div>
             </div>
-            <div class="panel field-info" id="field-panel">
+            <div class="panel field-info" id="field-panel" data-panel="field">
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         Field
@@ -592,7 +565,7 @@
                     <p> If you encounter a bug, please report it!</p>
                 </div>
             </div>
-            <div class="panel poke-info" id="p2">
+            <div class="panel poke-info" id="p2" data-panel="p2">
                 <div class="panel-heading"><h4 class="panel-title">Pokémon 2</h4></div>
                 <div class="panel-body">
                     <input type="text" class="set-selector calc-trigger" />&nbsp;&nbsp;
@@ -784,21 +757,11 @@
                 </div>
             </div>
             <div class="footer">
-                <p><em>This calculator is based on the work of Tapin, Firestorm, squirrelboy1225, and DaWoblefet, whose work was in turn based on the work of Honko, gamut, and Zarel. It has been optimized for players in the current Pokémon Video Game Championship Series by nerd of now. <br />Many thanks to Nugget Bridge and Trainer Tower for hosting previous incarnations of this calculator in the past.</em></p>
+                <p><em>本计算器基于 Tapin、Firestorm、squirrelboy1225 和 DaWoblefet 的工作，他们的工作又基于 Honko、gamut 和 Zarel 的成果。由 nerd of now 为当前宝可梦世界锦标赛系列进行优化。<br />感谢 Nugget Bridge 和 Trainer Tower 曾托管本计算器的早期版本。</em></p>
             </div>
             <div id="april_fools"></div>
             <button title="Say, what's this?" style="background: transparent; border: none !important; cursor:pointer; position: absolute; right: 0px; padding: 7px 8px" onclick="toggleAFD()">&nbsp;&nbsp;&nbsp;</button>
         </div>
-
-        <div style="display:inline-block;width:728px;height:30px" />
-        <!-- Damage Calc Ad (PROBABLY WILL REMAIN UNUSED) -->
-        <!--<ins class="adsbygoogle"
-         style="display:inline-block;width:728px;height:90px"
-         data-ad-client="ca-pub-7571541875475494"
-         data-ad-slot="3642617298"></ins>
-    <script>
-        (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>-->
 
         <script src="jquery-3.1.1.min.js"></script>
         <script type="text/javascript" src="script_res/switch_mode.js"></script>
@@ -842,5 +805,21 @@
         <script type="text/javascript" src="afd_res/pokedex_afd24.js"></script>
         <script type="text/javascript" src="afd_res/setdex_afd24.js"></script>
         <script type="text/javascript" src="script_res/sidebars.js"></script>
+        <script>
+        (function() {
+            var tabs = document.querySelectorAll('.mobile-tab');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].addEventListener('click', function() {
+                    var target = this.getAttribute('data-target');
+                    for (var j = 0; j < tabs.length; j++) tabs[j].classList.remove('active');
+                    this.classList.add('active');
+                    var panels = document.querySelectorAll('[data-panel]');
+                    for (var k = 0; k < panels.length; k++) panels[k].classList.remove('mobile-tab-visible');
+                    var panel = document.querySelector('[data-panel="' + target + '"]');
+                    if (panel) panel.classList.add('mobile-tab-visible');
+                });
+            }
+        })();
+        </script>
     </body>
 </html>
