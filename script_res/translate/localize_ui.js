@@ -324,7 +324,8 @@
         });
     }
 
-    function localizeStaticUi() {
+    function localizeStaticUi(opts) {
+        opts = opts || {};
         $("label, button, option, th, td, h1, h2, h3, span, p").each(function () {
             replaceOwnText($(this));
         });
@@ -342,25 +343,38 @@
             }
         });
 
-        refreshSelect2("select.nature, select.status, select.move-cat, select.type1, select.type2, select.tera-type, select.move-type, select.move-selector, select.ability, select.item");
+        /* Skip Select2 refresh when triggered by observer — it closes open dropdowns */
+        if (!opts.skipSelect2) {
+            refreshSelect2("select.nature, select.status, select.move-cat, select.type1, select.type2, select.tera-type, select.move-type, select.move-selector, select.ability, select.item");
+        }
     }
 
     window.localizeStaticUi = localizeStaticUi;
 
-    $(document).ready(localizeStaticUi);
-    $(document).on("click change mouseenter", "#switchTheme, #switchDex, .gen, .dex-change, .set-toggle, select, input[type='radio'], input[type='checkbox'], [title]", function () {
-        window.setTimeout(localizeStaticUi, 0);
-        window.setTimeout(localizeStaticUi, 50);
+    $(document).ready(function () { localizeStaticUi(); });
+    $(document).on("change", "select.nature, select.status, select.move-cat, select.type1, select.type2, select.tera-type, select.move-type, select.move-selector, select.ability, select.item", function () {
+        /* Select changed: full localization with Select2 refresh (dropdown already closed) */
+        window.setTimeout(function () { localizeStaticUi(); }, 50);
+    });
+    $(document).on("click change mouseenter", "#switchTheme, #switchDex, .gen, .dex-change, .set-toggle, input[type='radio'], input[type='checkbox'], [title]", function () {
+        /* Other interactions: text-only, no Select2 refresh to avoid UI jank */
+        window.setTimeout(function () { localizeStaticUi({ skipSelect2: true }); }, 0);
+        window.setTimeout(function () { localizeStaticUi({ skipSelect2: true }); }, 50);
     });
 
-    /* MutationObserver catches ALL dynamically inserted text (pokemon names, damage results, etc.)
-       Disconnect → translate → reconnect avoids infinite loop from our own text changes. */
+    /* MutationObserver catches dynamically inserted text (pokemon names, damage results, etc.).
+       Disconnect → translate → reconnect avoids infinite loop.
+       Debounced at 200ms and skips Select2 refresh to avoid closing open dropdowns. */
     var localizeObserver = new MutationObserver(function () {
+        /* Don't localize while user is interacting with a select/Select2 dropdown */
+        if (document.activeElement && document.activeElement.tagName === 'SELECT') return;
+        if (document.querySelector('.select2-dropdown-open')) return;
         localizeObserver.disconnect();
-        window.setTimeout(function () {
-            localizeStaticUi();
+        clearTimeout(localizeObserver._tid);
+        localizeObserver._tid = window.setTimeout(function () {
+            localizeStaticUi({ skipSelect2: true });
             localizeObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
-        }, 80);
+        }, 200);
     });
     localizeObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
 })();
