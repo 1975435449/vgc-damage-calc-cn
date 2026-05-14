@@ -4,8 +4,7 @@
 
 /* ===== Reset overrides ===== */
 body {
-    min-width: 0 !important;
-    font-family: "Noto Sans SC", "Noto Sans", Verdana, sans-serif !important;
+    font-family: "Noto Sans SC", "Microsoft YaHei", "PingFang SC", "Noto Sans", Verdana, sans-serif !important;
     background-color: #f0f4f3 !important;
 }
 
@@ -139,6 +138,7 @@ body {
     /* === Compact header === */
     body {
         padding: 0 0.5em !important;
+        min-width: 0 !important;
     }
 
     .title-text {
